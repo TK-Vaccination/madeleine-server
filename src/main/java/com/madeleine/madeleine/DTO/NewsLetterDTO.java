@@ -11,8 +11,10 @@ import org.hibernate.validator.constraints.URL;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class NewsLetterDTO {
+    @Setter
     @Getter
     public static class Request{
         @NotBlank
@@ -20,8 +22,9 @@ public class NewsLetterDTO {
         private String description;
         @URL
         @NotBlank
-        private String subsribeUrl;
+        private String subscribeUrl;
         private MultipartFile image;
+        private Boolean isFree;
         private Integer count;
         @Email
         private String email;
