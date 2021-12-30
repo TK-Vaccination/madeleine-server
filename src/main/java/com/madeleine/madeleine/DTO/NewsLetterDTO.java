@@ -1,6 +1,5 @@
 package com.madeleine.madeleine.DTO;
 
-import java.io.Serializable;
 import java.util.List;
 
 import javax.validation.constraints.Email;
@@ -11,8 +10,7 @@ import org.hibernate.validator.constraints.URL;
 import lombok.Getter;
 
 @Getter
-public class NewsLetterDTO implements Serializable {
-    private final long serialVersionUID = 48939457732L;        
+public class NewsLetterDTO {
     @NotBlank
     private String name;
     private String description;
