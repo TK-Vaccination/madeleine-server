@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import com.madeleine.madeleine.model.NewsLetter;
 
 import org.hibernate.validator.constraints.URL;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Getter;
 
@@ -20,7 +21,7 @@ public class NewsLetterDTO {
         @URL
         @NotBlank
         private String subsribeUrl;
-        private String imageUrl;
+        private MultipartFile image;
         private Integer count;
         @Email
         private String email;

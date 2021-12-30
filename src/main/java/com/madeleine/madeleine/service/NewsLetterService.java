@@ -9,12 +9,16 @@ import javax.transaction.Transactional;
 import com.madeleine.madeleine.model.NewsLetter;
 import com.madeleine.madeleine.repository.NewsLetterRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
 public class NewsLetterService {
     private NewsLetterRepository newsLetterRepository;
+    
+    @Autowired
+    private UploadService uploadService;
     
     public List<NewsLetter> listNewsletter(){
         return newsLetterRepository.findAll();       
