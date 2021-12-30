@@ -29,25 +29,25 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<?> createCategory(@RequestBody @Valid CategoryDTO categoryDTO){
+    public ResponseEntity<CategoryDTO.Response> createCategory(@RequestBody @Valid CategoryDTO.Request categoryDTO){
         Category category = categoryService.createCategory(new Category(categoryDTO.getCategory()));
-        return ResponseEntity.ok().body(new ResponseDTO("OK", "카테고리 생성 성공", category));
+        return ResponseEntity.ok().body(new CategoryDTO.Response("OK", "카테고리 생성 성공", category));
     }
 
     @RequestMapping(value="", method=RequestMethod.GET)
-    public ResponseEntity<?> listCategories() {
+    public ResponseEntity<CategoryDTO.ListResponse> listCategories() {
         log.info("list category");
-        return ResponseEntity.ok().body(new ResponseDTO("OK", "카테고리 리스트", categoryService.listCategories()));
+        return ResponseEntity.ok().body(new CategoryDTO.ListResponse("OK", "카테고리 리스트", categoryService.listCategories()));
     }
 
     @RequestMapping(value="/{categoryId}/", method=RequestMethod.DELETE)
-    public ResponseEntity<?> requestMethodName(@PathVariable Long categoryId) {
+    public ResponseEntity<ResponseDTO> requestMethodName(@PathVariable Long categoryId) {
         try {
             categoryService.deleteCategoryById(categoryId);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ResponseDTO("ERROR", "잘못된 카테고리 ID", null));
+            return ResponseEntity.badRequest().body(new ResponseDTO("ERROR", "잘못된 카테고리 ID"));
         }
-        return ResponseEntity.ok().body(new ResponseDTO("OK", "카테고리 삭제 성공", null));
+        return ResponseEntity.ok().body(new ResponseDTO("OK", "카테고리 삭제 성공"));
     }
     
 }
