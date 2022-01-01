@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
@@ -25,5 +26,10 @@ public class AWSS3UploadService implements UploadService{
     @Override
     public String getFileUrl(String filename){
         return amazonS3.getUrl(component.getBucket(), filename).toString();
+    }
+
+    @Override
+    public void deleteFile(String filename){
+        amazonS3.deleteObject(new DeleteObjectRequest(component.getBucket(), filename));
     }
 }

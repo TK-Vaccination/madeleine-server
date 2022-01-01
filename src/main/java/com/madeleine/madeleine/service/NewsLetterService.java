@@ -10,11 +10,12 @@ import javax.naming.NameNotFoundException;
 import javax.transaction.Transactional;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.madeleine.madeleine.DTO.NewsLetterDTO;
+import com.madeleine.madeleine.DTO.NewsLetterDTO.NewsLetterRequest;
 import com.madeleine.madeleine.model.NewsLetter;
 import com.madeleine.madeleine.repository.NewsLetterRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,7 +45,7 @@ public class NewsLetterService {
         newsLetterRepository.deleteById(newsletterId);
     }
 
-    public NewsLetter createNewsLetter(NewsLetterDTO.Request newsletterDTO) throws Exception {
+    public NewsLetter createNewsLetter(NewsLetterRequest newsletterDTO) throws Exception {
         String imageUrl = uploadImage(newsletterDTO.getImage(), newsletterDTO.getName());
         log.info(imageUrl);
         return newsLetterRepository.save(new NewsLetter(
@@ -55,6 +56,24 @@ public class NewsLetterService {
             imageUrl, 
             newsletterDTO.getEmail(), 
             newsletterDTO.getArchiveUrl()));
+    }
+
+    public NewsLetter updateNewsLetter(Long newsLetterId, NewsLetterRequest newsLetterDTO) throws NotFoundException, IOException{
+        NewsLetter newsLetter = newsLetterRepository.findById(newsLetterId).orElseThrow(() -> new NotFoundException());
+        newsLetter.setName(newsLetterDTO.getName());
+        newsLetter.setDescription(newsLetterDTO.getDescription());
+        newsLetter.setIsFree(newsLetterDTO.getIsFree());
+        newsLetter.setSubscribeUrl(newsLetterDTO.getSubscribeUrl());
+        if(newsLetterDTO.getImage().isEmpty()){
+            uploadService.deleteFile(newsLetter.getImageUrl());
+            newsLetter.setImageUrl(null);
+        }else {
+            String imageUrl = uploadImage(newsLetterDTO.getImage(), newsLetter.getName());
+            newsLetter.setImageUrl(imageUrl);
+        }
+        newsLetter.setEmail(newsLetterDTO.getEmail());
+        newsLetter.setArchiveUrl(newsLetterDTO.getArchiveUrl());
+        return newsLetterRepository.save(newsLetter);
     }
 
     private String uploadImage(MultipartFile multipartFile, String name) throws IOException {

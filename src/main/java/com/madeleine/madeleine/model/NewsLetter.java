@@ -39,7 +39,8 @@ public class NewsLetter {
     public NewsLetter(@NotBlank String name, String description, Boolean isFree, @NotBlank String subscribeUrl, String imageUrl, String email, String archiveUrl){
         this.name = name;
         this.description = description;
-        this.isFree = isFree;
+        if(isFree == null)  this.isFree = true;
+        else this.isFree = isFree;
         this.subscribeUrl = subscribeUrl;
         this.imageUrl = imageUrl;
         this.count = 0;
