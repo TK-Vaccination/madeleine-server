@@ -71,4 +71,9 @@ public class NewsLetterController {
             return ResponseEntity.badRequest().body(new ResponseDTO("ERROR", "잘못된 뉴스레터 아이디"));
         }
     }
+
+    @RequestMapping(value = "/category/{categoryId}", method = RequestMethod.GET)
+    public ResponseEntity<ListNewsLetterResponse> findByCategory(@PathVariable Long categoryId){
+        return ResponseEntity.ok().body(new ListNewsLetterResponse("OK", "뉴스레터 찾기", newsLetterService.findByCategory(categoryId)));
+    }
 }

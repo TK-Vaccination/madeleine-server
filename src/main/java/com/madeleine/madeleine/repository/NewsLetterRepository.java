@@ -8,4 +8,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface NewsLetterRepository extends CrudRepository<NewsLetter, Long> {
     public List<NewsLetter> findAll();    
+    public List<NewsLetter> findByCategories_Id(Long categoryId);
 }

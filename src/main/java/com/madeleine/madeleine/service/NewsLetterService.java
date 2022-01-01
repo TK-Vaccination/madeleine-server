@@ -91,6 +91,10 @@ public class NewsLetterService {
         return newsLetterRepository.save(newsLetter);
     }
 
+    public List<NewsLetter> findByCategory(Long categoryId){
+        return newsLetterRepository.findByCategories_Id(categoryId);
+    }
+
     private String uploadImage(MultipartFile multipartFile, String name) throws IOException {
         String filename = name + "/" + createFilename(multipartFile.getOriginalFilename());
 
