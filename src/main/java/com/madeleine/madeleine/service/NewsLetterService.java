@@ -2,16 +2,17 @@ package com.madeleine.madeleine.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import javax.naming.NameNotFoundException;
 import javax.transaction.Transactional;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.madeleine.madeleine.DTO.NewsLetterDTO.NewsLetterRequest;
+import com.madeleine.madeleine.model.Category;
 import com.madeleine.madeleine.model.NewsLetter;
+import com.madeleine.madeleine.repository.CategoryRepository;
 import com.madeleine.madeleine.repository.NewsLetterRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class NewsLetterService {
     private NewsLetterRepository newsLetterRepository;
     
     @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
     private UploadService uploadService;
     
     public List<NewsLetter> listNewsletter(){
@@ -36,9 +40,8 @@ public class NewsLetterService {
     }
     
     public NewsLetter getNewsLetterById(Long newsletterId) throws Exception {
-        Optional<NewsLetter> opNewsletter = newsLetterRepository.findById(newsletterId);
-        if(!opNewsletter.isPresent()) throw new NameNotFoundException();
-        return opNewsletter.get();
+        NewsLetter newsletter = newsLetterRepository.findById(newsletterId).orElseThrow(() -> new NotFoundException());
+        return newsletter;
     }
 
     public void deleteNewsLetterById(Long newsletterId) throws Exception {
@@ -48,6 +51,11 @@ public class NewsLetterService {
     public NewsLetter createNewsLetter(NewsLetterRequest newsletterDTO) throws Exception {
         String imageUrl = uploadImage(newsletterDTO.getImage(), newsletterDTO.getName());
         log.info(imageUrl);
+        List<Category> categories = new ArrayList<>();
+        for(Long c : newsletterDTO.getCategories()){
+            Category category = categoryRepository.findById(c).orElseThrow(() -> new NotFoundException());
+            categories.add(category);
+        }
         return newsLetterRepository.save(new NewsLetter(
             newsletterDTO.getName(), 
             newsletterDTO.getDescription(), 
@@ -55,7 +63,8 @@ public class NewsLetterService {
             newsletterDTO.getSubscribeUrl(), 
             imageUrl, 
             newsletterDTO.getEmail(), 
-            newsletterDTO.getArchiveUrl()));
+            newsletterDTO.getArchiveUrl(),
+            categories));
     }
 
     public NewsLetter updateNewsLetter(Long newsLetterId, NewsLetterRequest newsLetterDTO) throws NotFoundException, IOException{
@@ -73,6 +82,12 @@ public class NewsLetterService {
         }
         newsLetter.setEmail(newsLetterDTO.getEmail());
         newsLetter.setArchiveUrl(newsLetterDTO.getArchiveUrl());
+        List<Category> categories = new ArrayList<>();
+        for(Long c : newsLetterDTO.getCategories()){
+            Category category = categoryRepository.findById(c).orElseThrow(() -> new NotFoundException());
+            categories.add(category);
+        }
+        newsLetter.setCategories(categories);
         return newsLetterRepository.save(newsLetter);
     }
 

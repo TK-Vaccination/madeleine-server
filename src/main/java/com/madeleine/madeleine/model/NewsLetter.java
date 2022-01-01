@@ -1,6 +1,5 @@
 package com.madeleine.madeleine.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -36,7 +35,7 @@ public class NewsLetter {
     @ManyToMany
     private List<Category> categories;
 
-    public NewsLetter(@NotBlank String name, String description, Boolean isFree, @NotBlank String subscribeUrl, String imageUrl, String email, String archiveUrl){
+    public NewsLetter(@NotBlank String name, String description, Boolean isFree, @NotBlank String subscribeUrl, String imageUrl, String email, String archiveUrl, List<Category> categoires){
         this.name = name;
         this.description = description;
         if(isFree == null)  this.isFree = true;
@@ -46,6 +45,6 @@ public class NewsLetter {
         this.count = 0;
         this.email = email;
         this.archiveUrl = archiveUrl;
-        this.categories = new ArrayList<>();
+        this.categories = categoires;
     }
 }
