@@ -16,9 +16,9 @@ import com.madeleine.madeleine.repository.CategoryRepository;
 import com.madeleine.madeleine.repository.NewsLetterRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.webjars.NotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,7 +40,7 @@ public class NewsLetterService {
     }
     
     public NewsLetter getNewsLetterById(Long newsletterId) throws Exception {
-        NewsLetter newsletter = newsLetterRepository.findById(newsletterId).orElseThrow(() -> new NotFoundException());
+        NewsLetter newsletter = newsLetterRepository.findById(newsletterId).orElseThrow(() -> new NotFoundException("잘못된 뉴스레터 아이디"));
         return newsletter;
     }
 
@@ -53,7 +53,7 @@ public class NewsLetterService {
         log.info(imageUrl);
         List<Category> categories = new ArrayList<>();
         for(Long c : newsletterDTO.getCategories()){
-            Category category = categoryRepository.findById(c).orElseThrow(() -> new NotFoundException());
+            Category category = categoryRepository.findById(c).orElseThrow(() -> new NotFoundException("잘못된 카테고리 아이디"));
             categories.add(category);
         }
         return newsLetterRepository.save(new NewsLetter(
@@ -68,7 +68,7 @@ public class NewsLetterService {
     }
 
     public NewsLetter updateNewsLetter(Long newsLetterId, NewsLetterRequest newsLetterDTO) throws NotFoundException, IOException{
-        NewsLetter newsLetter = newsLetterRepository.findById(newsLetterId).orElseThrow(() -> new NotFoundException());
+        NewsLetter newsLetter = newsLetterRepository.findById(newsLetterId).orElseThrow(() -> new NotFoundException("잘못된 뉴스레터 아이디"));
         newsLetter.setName(newsLetterDTO.getName());
         newsLetter.setDescription(newsLetterDTO.getDescription());
         newsLetter.setIsFree(newsLetterDTO.getIsFree());
@@ -84,7 +84,7 @@ public class NewsLetterService {
         newsLetter.setArchiveUrl(newsLetterDTO.getArchiveUrl());
         List<Category> categories = new ArrayList<>();
         for(Long c : newsLetterDTO.getCategories()){
-            Category category = categoryRepository.findById(c).orElseThrow(() -> new NotFoundException());
+            Category category = categoryRepository.findById(c).orElseThrow(() -> new NotFoundException("잘못된 카테고리 이름"));
             categories.add(category);
         }
         newsLetter.setCategories(categories);
@@ -93,6 +93,10 @@ public class NewsLetterService {
 
     public List<NewsLetter> findByCategory(Long categoryId){
         return newsLetterRepository.findByCategories_Id(categoryId);
+    }
+
+    public NewsLetter findById(Long newsletterId){
+        return newsLetterRepository.findById(newsletterId).orElseThrow(()->new NotFoundException("잘못된 뉴스레터 아이디"));
     }
 
     private String uploadImage(MultipartFile multipartFile, String name) throws IOException {

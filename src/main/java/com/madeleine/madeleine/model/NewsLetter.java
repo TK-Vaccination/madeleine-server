@@ -3,6 +3,7 @@ package com.madeleine.madeleine.model;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,7 +33,7 @@ public class NewsLetter {
     private Integer count;
     private String email;
     private String archiveUrl;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Category> categories;
 
     public NewsLetter(@NotBlank String name, String description, Boolean isFree, @NotBlank String subscribeUrl, String imageUrl, String email, String archiveUrl, List<Category> categoires){
